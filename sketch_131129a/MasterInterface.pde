@@ -107,8 +107,7 @@ class MasterInterface {
         
         try {
             FileWriter fw = new FileWriter( selected );
-            
-            
+
             fw.close();
         } catch( Exception e ){}
     }

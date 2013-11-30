@@ -177,7 +177,7 @@ class MInterface {
             if( sensVal != -1 )  sensitivity.setValue(sensVal);
             
             reader.close();
-        } catch(Exception e){}
+        } catch(Exception e){println("DIDNT LOAD CONFIG!");}
     }
     
     void saveNotes(File selected) {

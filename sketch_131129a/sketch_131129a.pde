@@ -1,5 +1,7 @@
 import processing.serial.*;
 import controlP5.*;
+import java.util.*;
+import java.io.*;
 
 Serial port;
 
@@ -14,6 +16,8 @@ MInterface load_mi;
 MInterface save_mi;
 
 MasterInterface master;
+
+Hashtable<String, String> noteToMidi;
 
 void setup() {
     size(800,600);
@@ -34,7 +38,9 @@ void setup() {
     
     //print(Serial.list());
     port = new Serial(this, Serial.list()[5], 115200);
-
+    
+    noteToMidi = new Hashtable<String, String>();
+    selectInput("Select a MIDI file:", "loadMidiConversion" );
 }
 
 void draw() {
@@ -110,6 +116,8 @@ public void controlEvent(ControlEvent event) {
       
     } else if( label != null && label.startsWith("Calibrate") ) {
       println("calibrate");
+      port.write("\t");
+      port.write("CALIBRATE");
       
     }
 }
@@ -142,5 +150,21 @@ void saveMasterConfig(File selection) {
   if( selection != null ) {
       master.saveConfig(selection);
   }
+}
+
+void loadMidiConversion(File selection) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(selection));
+            
+            while(reader.ready())
+            {
+                String line = reader.readLine();
+                String [] noteMidi = line.split(" +");
+                
+                noteToMidi.put(noteMidi[0], noteMidi[1]);
+            }
+            reader.close();
+          
+        } catch(Exception e){print("Couldn't load MIDI!");}
 }
 

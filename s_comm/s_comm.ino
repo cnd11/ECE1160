@@ -1,3 +1,5 @@
+#define CALIBRATE_PIN 12
+
 String command = "";
 
 int state = LOW;
@@ -9,7 +11,12 @@ void setup()
   while(!Serial) return; 
   
   pinMode(13, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(CALIBRATE_PIN, OUTPUT);
+  
   digitalWrite(13, LOW);
+  digitalWrite(11, LOW);
+  digitalWrite(CALIBRATE_PIN, LOW);
 }
 
 void loop()
@@ -22,41 +29,48 @@ void loop()
   delay(10);
 }
 
-void checkSerial() 
-{
-  
+void checkSerial() { 
   if(Serial.peek() != '\t' ) return;
   
   Serial.read();  // consume '\t'
 
-  delay(10);      // enough delay, I guess?
+  delay(10);      // enough delay, ?
   
   while(Serial.available() > 0)
   {
     char inChar = Serial.read();
   
-    if(inChar == '\n')
-    {
-      break;
-    }else if(inChar != '\r'){
-      command += inChar;
-    } 
+    if(inChar == '\n') break;
+      
+    if(inChar != '\r') command += inChar;
+  
     delay(1);
   }
+  
   Serial.flush();
-  
-  Serial.println(command);
-  
-   if(command == "start cmd+data")
-     {
-       state = !state;
-       digitalWrite(13, state);
+ 
+   if(command == "start cmd+data") {
+      digitalWrite(11, HIGH);
+       
+       //Parse config data!
+       
+       delay(4000);
+       digitalWrite(11, LOW);
+       
+     } else if(command == "CALIBRATE") {
+       
+       digitalWrite(CALIBRATE_PIN, HIGH);
+       
+       calibrate(); // Calibrate here!
+       
+       delay(4000);
+       digitalWrite(CALIBRATE_PIN, LOW);
      }
-     
-  delay(2000);
-     
      command = "";
-    
 }
 
 //void serialEvent() {checkSerial();}
+
+void calibrate() {
+  
+}
