@@ -4,8 +4,8 @@ import java.io.*;
 
 class MInterface {
     
-    int inputRows = 3;
-    int inputCols = 4;
+    private static final int INPUT_ROWS = 3;
+    private static final int INPUT_COLS = 4;
     
     int topLeftX;
     int topLeftY;
@@ -43,11 +43,11 @@ class MInterface {
         topLeftXInputs = topLeftX + 30;
         topLeftYInputs = topLeftY + 50;
         
-        for( int i = 0; i < inputRows ; i++) {
-            for( int j = 0; j < inputCols; j++) {
+        for( int i = 0; i < INPUT_ROWS ; i++) {
+            for( int j = 0; j < INPUT_COLS; j++) {
                 
                 Textfield tf = cp5.addTextfield("" + pNum + i + j)
-                                  .setId(i * inputRows + j)
+                                  .setId(i * INPUT_ROWS + j)
                                   .setFont(font)
                                   .setPosition(topLeftXInputs + j * (textfieldW + bufferX), topLeftYInputs + i * (textfieldH + bufferY) )
                                   .setSize(textfieldW, textfieldH)
@@ -61,7 +61,7 @@ class MInterface {
         
         saveButton = cp5.addButton("Save Panel " + pNum)
                         .setId(pNum)
-                        .setPosition(topLeftXInputs + inputCols * (textfieldW + bufferX) /2  - 50, topLeftYInputs + inputRows * (textfieldH + bufferY) + bufferY)
+                        .setPosition(topLeftXInputs + INPUT_COLS * (textfieldW + bufferX) /2  - 50, topLeftYInputs + INPUT_ROWS * (textfieldH + bufferY) + bufferY)
                         .setSize(90, 20);
         
         loadConfigButton = cp5.addButton("Load Config " + pNum)
@@ -71,7 +71,7 @@ class MInterface {
         
         loadNotesButton = cp5.addButton("Load " + pNum)
                              .setId(pNum)
-                             .setPosition(topLeftX + inputCols * (textfieldW + bufferX)  - 30, topLeftYInputs - 35)
+                             .setPosition(topLeftX + INPUT_COLS * (textfieldW + bufferX)  - 30, topLeftYInputs - 35)
                              .setSize(50, 20);
         
         toggle = cp5.addToggle("Toggle " + pNum)
