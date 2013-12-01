@@ -27,12 +27,12 @@ class MasterInterface {
                         .setId(0)
                         .setPosition(topLeftX + 230, 100)
                         .setSize(150, 20);
-        
+                        
         calibrate = cp5.addButton("Calibrate")
                        .setId(1)
                        .setPosition(topLeftX + _width / 2 - 40, 200)
                        .setSize(80, 20);
-                        
+        
         saveConfig = cp5.addButton("Save Master Config")
                         .setId(3)
                         .setPosition(topLeftX + _width / 2 - 100, 470)
@@ -72,44 +72,65 @@ class MasterInterface {
         
         cp5.getController("Trigger Sensitivity").getCaptionLabel().align(ControlP5.LEFT, ControlP5.TOP_OUTSIDE).setPaddingX(0);
         cp5.getController("Master Delay").getCaptionLabel().align(ControlP5.LEFT, ControlP5.TOP_OUTSIDE).setPaddingX(0);
-        
     }
     
     void _draw() {
         pushStyle();
+        
         noStroke();
         fill(197);
         rect(topLeftX, topLeftY, _width, _height);
         fill(0, 0, 0);
         textFont(font_large);
         text("MASTER CONFIG", topLeftX + 60, topLeftY + 30);
+        
         popStyle();
     }
     
-    void loadConfig( File file ) {
+    void loadConfig( File file, ArrayList<MInterface> panels ) {
         if( file == null ) return;
         
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             
+            int panelToEdit = 0;
+            StringBuilder notes = new StringBuilder();
+            
             while(reader.ready())
             {
-                String x = reader.readLine();
+                String line = reader.readLine();
                 
-               
+                if(line.startsWith("PANEL ")) {
+                    try{ panelToEdit = Integer.parseInt(line.split(" +")[1]); } catch (Exception e) {println("Extract index " + e); return; }
+                    continue;
+                }
+                
+                String [] panelInfo = line.split(",");   // Use a ',' to delimit the notes | config | ... for each pannel
+                
+                panels.get(panelToEdit).setNoteString(panelInfo[ 0 ]);
             }
+            
             reader.close();
-        } catch(Exception e){}
+        } catch(Exception e){println("Error on loading master " + e);}
     }
     
-    void saveConfig(File selected) {
+    void saveConfig(File selected, ArrayList<MInterface> panels) {
         if( selected == null) return;
         
         try {
             FileWriter fw = new FileWriter( selected );
-
+            
+            for(MInterface panel : panels) {
+                fw.write( "PANEL " + panel.pNum + " CONFIG\n" );   // For each pannel
+                
+                fw.write(panel.getNoteString());                  // Write the note string. Single line "a1 ... e5"
+                
+                // Write panel configs. toggleDelay.getValue(), sensitivity.getValue(), anything eles we might need
+                
+                fw.write("\n");                                    // Write newline
+            }
+            
             fw.close();
-        } catch( Exception e ){}
+        } catch( Exception e ){print(e);}
     }
-    
 }

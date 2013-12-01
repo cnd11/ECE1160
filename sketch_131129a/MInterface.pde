@@ -47,6 +47,7 @@ class MInterface {
             for( int j = 0; j < inputCols; j++) {
                 
                 Textfield tf = cp5.addTextfield("" + pNum + i + j)
+                                  .setId(i * inputRows + j)
                                   .setFont(font)
                                   .setPosition(topLeftXInputs + j * (textfieldW + bufferX), topLeftYInputs + i * (textfieldH + bufferY) )
                                   .setSize(textfieldW, textfieldH)
@@ -54,7 +55,7 @@ class MInterface {
                                   .setFocus(false)
                                   .setColorLabel(colors[pNum])
                                   .setColorBackground(color(100,100,100,200));
-                inputs.add(tf);
+                                  inputs.add(tf);
             }
         }
         
@@ -79,8 +80,7 @@ class MInterface {
                     .setColorLabel(0);
         
         toggle.getCaptionLabel().alignX(CENTER);
-        //toggle.getCaptionLabel().style().marginTop = -12;
-        
+       
         toggleDelay = cp5.addSlider("Toggle delay " + pNum)
                          .setPosition(gridWidth/2 + 25 , topLeftY + gridHeight/3 + 20)
                          .setHeight(20)
@@ -102,7 +102,7 @@ class MInterface {
                          .setColorLabel(0)
                          .setColorCaptionLabel(255)
                          .setDecimalPrecision(0);
-        
+                          
         //cp5.getController("Toggle delay " + pNum).getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
         cp5.getController("Toggle delay " + pNum).getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
         cp5.getController("Sensitivity " + pNum).getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
@@ -137,20 +137,24 @@ class MInterface {
             
             while(reader.ready())
             {
-                String note = reader.readLine();
+                String line = reader.readLine();
                 
-                if (index < inputs.size() )
-                    inputs.get(index).setText(note);
-                else
-                    break;
+                String [] notes = line.split(" +");
                 
-                index++;
+                for(int inedx = 0; inedx < notes.length; index++) {
+                    if (index < inputs.size() )
+                        inputs.get(index).setText( notes[index] );
+                    else
+                        break;
+                }
             }
+            
             reader.close();
+            
         } catch(Exception e){}
     }
     
-    void loadConfig( File file ) {
+    void loadConfig( File file) {
         if( file == null ) return;
         
         try {
@@ -161,16 +165,16 @@ class MInterface {
             
             if(reader.ready())
             {
-              try {
-                toggleDelayVal = Integer.parseInt(reader.readLine());
-              } catch (NumberFormatException nfe) {}
+                try {
+                    toggleDelayVal = Integer.parseInt(reader.readLine());
+                } catch (NumberFormatException nfe) {}
             }
             
             if(reader.ready())
             {
-              try {
-                sensVal = Integer.parseInt(reader.readLine());
-              } catch (NumberFormatException nfe) {}
+                try {
+                    sensVal = Integer.parseInt(reader.readLine());
+                } catch (NumberFormatException nfe) {}
             }
             
             if( toggleDelayVal != -1 )  toggleDelay.setValue(toggleDelayVal);
@@ -186,14 +190,27 @@ class MInterface {
         try {
             FileWriter fw = new FileWriter( selected );
             
-            for( Textfield tf : inputs)
-            {
-                fw.write( tf.getText() + "\n");
-                
-                print( tf.getText() + " ");
-            }
+            fw.write( this.getNoteString() + "\n" );
             
             fw.close();
         } catch( Exception e ){}
+    }
+    
+    String getNoteString() {
+        StringBuilder sb = new StringBuilder();
+        
+        for( Textfield tf : inputs)
+            sb.append( tf.getText() + " ");
+        
+        
+        return sb.toString();
+    }
+    
+    void setNoteString(String notes) {
+        String [] noteArr = notes.split(" +");
+        int i = 0;
+        
+        for( Textfield tf : inputs)
+            tf.setText(noteArr[i++]) ;
     }
 }

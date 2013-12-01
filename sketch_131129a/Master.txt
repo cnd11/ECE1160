@@ -1,0 +1,6 @@
+PANEL 0 CONFIG
+a4 b4 c4 d4 e4 f4 g4 a5 b5 c5 d5 e5,75 3
+PANEL 1 CONFIG
+a4 b4 c4 d4 e4 f4 g4 a5 b5 c5 d5 e5,75 3
+PANEL 2 CONFIG
+a4 b4 c4 d4 e4 f4 g4 a5 b5 c5 d5 e5,75 3
