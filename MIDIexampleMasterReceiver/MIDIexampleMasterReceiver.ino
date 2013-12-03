@@ -24,13 +24,14 @@ int keyval[12]={65,59,57,69,67,60,62,64,70,71,72,73};
 byte icdata [16];
 byte icdataB [24];
 
- int *calibrate = malloc( 12 * sizeof(int));
+ int *calibrateAr;
 
 
 
 void  setup() //The Setup Loop
 {
     
+  calibrateAr = (int *)malloc( 12 * sizeof(int));
     MIDI.begin(); //initialise midi library
     delay(1000);
     Serial.begin(115200);
@@ -123,7 +124,7 @@ void loop() //the main loop
     {
         
         //if (pinon[i]){
-        if (pinval[i] > 1.1 * calibrate[i]){
+        if (pinval[i] > 1.1 * calibrateAr[i]){
             if(pintog[i])
                 //if(1)
             {
@@ -179,7 +180,7 @@ void calibrate() {
   
   Wire.requestFrom(2, 24);    // request 6 bytes from slave device #2
    
-    i=0;
+    int i=0;
     while(Wire.available())    // slave may send less than requested
     {
         dataSample[i++]=Wire.read();
@@ -188,7 +189,7 @@ void calibrate() {
     int *intCal =(int*)&dataSample;
     
     for(i=0; i< 12; i++)
-      calibrate[i] = intCal[i];
+      calibrateAr[i] = intCal[i];
     
     
 }
