@@ -22,11 +22,11 @@ void setup()
 void loop()
 {
 
- Serial.println("busy...");
+ //Serial.println("busy...");
   
   checkSerial();   // can check in loop or use serialEvent
   
-  delay(10);
+  delay(100);
 }
 
 void checkSerial() { 
@@ -59,12 +59,12 @@ void checkSerial() {
        
      } else if(command == "CALIBRATE") {
        
-       digitalWrite(CALIBRATE_PIN, HIGH);
+       digitalWrite(13, HIGH);
        
        calibrate(); // Calibrate here!
        
        delay(4000);
-       digitalWrite(CALIBRATE_PIN, LOW);
+       digitalWrite(13, LOW);
      }
      command = "";
 }
