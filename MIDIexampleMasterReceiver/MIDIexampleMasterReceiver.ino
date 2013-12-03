@@ -37,6 +37,8 @@ void  setup() //The Setup Loop
     delay(500);
     Wire.begin();
     delay(500);
+    
+    calibrate();
 }
 //---------------------------------------------
 void loop() //the main loop
