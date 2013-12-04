@@ -6,6 +6,7 @@
 #include <MIDI.h>
 #include <Serial.h>
 #include <Wire.h>
+#include "panel.h"
 
 
 short pinval[12];
@@ -36,20 +37,24 @@ void  setup() //The Setup Loop
     Wire.begin();
     delay(500);
     
-    calibrate();
+   // calibrate(Panel);
 }
 //---------------------------------------------
 void loop() //the main loop
 {
+    //Structs to hold all options for panel
+    PANEL Panel1;
+    PANEL Panel2;
+    PANEL Panel3;
+  
+    getPanelData(Panel1);
+    generateMidi(Panel1);
     
-    getPanelData(1,allPanelsData[0]);
-    generateMidi(1,allPanelsData[0]);
+    getPanelData(Panel2);
+    generateMidi(Panel2);
     
-    getPanelData(2,allPanelsData[1]);
-    generateMidi(2,allPanelsData[1]);
-    
-    getPanelData(3,allPanelsData[2]);
-    generateMidi(3,allPanelsData[2]);
+    getPanelData(Panel3);
+    generateMidi(Panel3);
     
     delay(50);
     
@@ -192,13 +197,13 @@ void calibrate(int panel_index, int *data_array) {
       calibrateAr[i] = intCal[i];   
 }
 
-void getPanelData(int panel_index, int *data_array) {
+void getPanelData(PANEL singlePanel) {
 //Gets sensor data for one grid
 
     //Byte Array to get raw bytes
     byte ICdataAsBytes[24];
   
-    Wire.requestFrom(panel_index, 24);    // request 6 bytes from slave device #2
+    Wire.requestFrom(singlePanel.addr, 24);    // request 6 bytes from slave device #2
     
     int i = 0;
     
@@ -211,19 +216,19 @@ void getPanelData(int panel_index, int *data_array) {
     for( i = 0; i < 12; i++)
         data_array[i] = tempData[i];
 }
-void generateMidi (PANEL pge){
+void generateMidi (PANEL singlePanel){
 //Turns MIDI Notes on and off accordingly 
 
         int i;
         for(i=0; i<12; i++)
     {
         
-        if (singlePanelData[i]>850){
+        if (singlePanel.data[i]>850){
             //Serial.println(data_array[i]);
             //if(pintogB[i])
                 if(1)
             {
-                MIDI.sendNoteOn(keyval[i],map(singlePanelData[i],750, 1023, 65, 127),panel_index);
+                MIDI.sendNoteOn(singlePanel.keyval[i],map(singlePane.data[i],750, 1023, 65, 127),singlePanel.channel);
                 
             }
         }
@@ -231,7 +236,7 @@ void generateMidi (PANEL pge){
         {
            // if (pintogB[i]){
                 if(1){
-                MIDI.sendNoteOff(keyval[i],127,panel_index);
+                MIDI.sendNoteOff(singlePanel.keyval[i],127,singlePanel.channel);
              
                 
             }
