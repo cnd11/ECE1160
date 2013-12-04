@@ -200,16 +200,15 @@ void getPanelData(int panel_index, int *data_array){
   
     Wire.requestFrom(panel_index, 24);    // request 6 bytes from slave device #2
     
-    int i;
-    i=0;
+    int i = 0;
     
     while(Wire.available())    // slave may send less than requested
-    {
-        ICdataAsBytes[i]=Wire.read();
-        i++;
-    }
+        ICdataAsBytes[i++]=Wire.read();
 
-    data_array =(int*)&ICdataAsBytes;
+
+    int *tempData =(int*)&ICdataAsBytes;
+    
+    for
 }
 void generateMidi (int panel_index, int *data_array){
 //Turns MIDI Notes on and off accordingly 
