@@ -211,7 +211,7 @@ void getPanelData(int panel_index, int *data_array) {
     for( i = 0; i < 12; i++)
         data_array[i] = tempData[i];
 }
-void generateMidi (int panel_index, int *singlePanelData){
+void generateMidi (PANEL pge){
 //Turns MIDI Notes on and off accordingly 
 
         int i;

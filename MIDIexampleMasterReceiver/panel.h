@@ -1,7 +1,7 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-struct panel {
+struct PANEL {
     int addr;
     int toggle_delay;
     double sensitvity;
