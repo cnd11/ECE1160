@@ -23,6 +23,7 @@ boolean lastvalB;
 int keyval[12]={65,59,57,69,67,60,62,64,70,71,72,73};
 byte icdata [16];
 byte icdataB [24];
+int all_data[3][12];
 
  int *calibrateAr;
  
@@ -47,53 +48,23 @@ void  setup() //The Setup Loop
 void loop() //the main loop
 {
     
+    getPanelData(1,all_data[0]);
+    Serial.println(all_data[0][3]);
+    generateMidi(1,all_data[0]);
+    delay(200);
     
-    Wire.requestFrom(2, 16);    // request 6 bytes from slave device #2
+    /*
+    getPanelData(2,all_datat[1]);
     
-    int i;
-    i=0;
-    while(Wire.available())    // slave may send less than requested
-    {
-        icdata[i]=Wire.read();
-        i++;
-    }
-
-    int *sensord =(int*)&icdata;
-    for (i=0; i<8; i++)
-    {
-        //LEAVING HERE DEBUG
-        //Serial.print(i);
-        //Serial.print(" ");
-        //Serial.println(sensord[i]);
-        
-    }
-    delay(50);
+    getPanelData(3,all_datat[2]);
+    /*
     
     
-    Wire.requestFrom(1, 24);    // request 6 bytes from slave device #2
-    
-    
-    i=0;
-    while(Wire.available())    // slave may send less than requested
-    {
-        icdataB[i]=Wire.read();
-        i++;
-    }
- 
-
-    int *sensordB =(int*)&icdataB;
-    for (i=0; i<12; i++)
-    {
-        
-
-        
-    }
-    
-    //int i;
+   
     delay(20);
     for(i=0; i<12; i++)
     {
-        pinval[i]=sensordB[i];
+        pinval [i]=sensordB[i];
         pinvalB[i]=sensord[i];
         
         
@@ -109,7 +80,7 @@ void loop() //the main loop
         
     }
   
-    
+    /*
     for(i=0; i<12; i++)
     {
         
@@ -137,7 +108,8 @@ void loop() //the main loop
             //MIDI.sendControlChange(7, map(pinval[i],600, 1023, 0, 127),i%2+1);
         }
     }
-    
+    */
+    /*
     for(i=0; i<8; i++)
     {
         
@@ -161,6 +133,7 @@ void loop() //the main loop
         }
     }
     Serial.flush();
+    */
 }
 
 void checkSerial() { 
@@ -218,3 +191,53 @@ void calibrate() {
     for(i=0; i< 12; i++)
       calibrateAr[i] = intCal[i];   
 }
+
+void getPanelData(int panel_index, int *data_array){
+//Gets sensor data for one grid
+
+    //Byte Array to get raw bytes
+    byte ICdataAsBytes[24];
+  
+    Wire.requestFrom(panel_index, 24);    // request 6 bytes from slave device #2
+    
+    int i;
+    i=0;
+    
+    while(Wire.available())    // slave may send less than requested
+    {
+        ICdataAsBytes[i]=Wire.read();
+        i++;
+    }
+
+    data_array =(int*)&ICdataAsBytes;
+}
+void generateMidi (int panel_index, int *data_array){
+//Turns MIDI Notes on and off accordingly 
+
+        int i;
+        for(i=0; i<12; i++)
+    {
+        
+        if (data_array[i]>500){
+            //if(pintogB[i])
+                if(1)
+            {
+                MIDI.sendNoteOn(keyval[i],map(data_array[i],750, 1023, 65, 127),2);
+                
+            }
+        }
+        else
+        {
+           // if (pintogB[i]){
+                if(1){
+                //MIDI.sendNoteOff(keyval[i],127,2);
+             
+                
+            }
+            //MIDI.sendControlChange(7, map(pinval[i],600, 1023, 0, 127),i%2+1);
+        }
+    }
+    Serial.flush();
+}
+
+
