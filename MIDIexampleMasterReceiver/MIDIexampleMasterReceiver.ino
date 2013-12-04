@@ -7,11 +7,6 @@
 #include <Serial.h>
 #include <Wire.h>
 
-
-int keyispressed[16]; //Is the key currently pressed?
-int noteisplaying[16]; //Is the Note currently playing?
-unsigned char data1; //data from chip 1
-unsigned char data2; //data from chip 2
 short pinval[12];
 short pinvalB[8];
 boolean pinon[12];
@@ -28,9 +23,7 @@ int all_data[3][12];
  int *calibrateAr;
  
  String command = "";
-
-
-
+ 
 void  setup() //The Setup Loop
 {
     
@@ -176,7 +169,7 @@ void checkSerial() {
      command = "";
 }
 
-void calibrate() {
+void calibrate(int panel_index, int *data_array) {
   
   byte dataSample [24];
   
@@ -192,7 +185,7 @@ void calibrate() {
       calibrateAr[i] = intCal[i];   
 }
 
-void getPanelData(int panel_index, int *data_array){
+void getPanelData(int panel_index, int *data_array) {
 //Gets sensor data for one grid
 
     //Byte Array to get raw bytes
@@ -203,7 +196,7 @@ void getPanelData(int panel_index, int *data_array){
     int i = 0;
     
     while(Wire.available())    // slave may send less than requested
-        ICdataAsBytes[i++]=Wire.read();
+        ICdataAsBytes[i++] = Wire.read();
 
 
     int *tempData =(int*)&ICdataAsBytes;
