@@ -25,6 +25,8 @@ byte icdata [16];
 byte icdataB [24];
 
  int *calibrateAr;
+ 
+ String command = "";
 
 
 
@@ -174,6 +176,46 @@ void loop() //the main loop
     Serial.flush();
 }
 
+void checkSerial() { 
+  if(Serial.peek() != '\t' ) return;
+  
+  Serial.read();  // consume '\t'
+
+  delay(10);      // enough delay, ?
+  
+  while(Serial.available() > 0)
+  {
+    char inChar = Serial.read();
+  
+    if(inChar == '\n') break;
+      
+    if(inChar != '\r') command += inChar;
+  
+    delay(1);
+  }
+  
+  Serial.flush();
+ 
+   if(command == "start cmd+data") {
+      digitalWrite(11, HIGH);
+       
+       // Parse config data!
+       
+       delay(4000);
+       digitalWrite(11, LOW);
+       
+     } else if(command == "CALIBRATE") {
+       
+       digitalWrite(13, HIGH);
+       
+       calibrate(); // Calibrate here!
+       
+       delay(4000);
+       digitalWrite(13, LOW);
+     }
+     command = "";
+}
+
 void calibrate() {
   
   byte dataSample [24];
@@ -182,18 +224,10 @@ void calibrate() {
    
     int i=0;
     while(Wire.available())    // slave may send less than requested
-    {
         dataSample[i++]=Wire.read();
-    }
     
     int *intCal =(int*)&dataSample;
     
     for(i=0; i< 12; i++)
-      calibrateAr[i] = intCal[i];
-    
-    
+      calibrateAr[i] = intCal[i];   
 }
-
-//-------------------------------------
-
-//-------------------------------------
