@@ -6,6 +6,7 @@
 #include <MIDI.h>
 #include <Serial.h>
 #include <Wire.h>
+#include "panel.h"
 
 
 short pinval[12];
@@ -25,6 +26,10 @@ int allPanelsData[3][12];
  
  String command = "";
  
+PANEL Panel1;
+PANEL Panel2;
+PANEL Panel3;
+ 
 void  setup() //The Setup Loop
 {
     
@@ -36,20 +41,27 @@ void  setup() //The Setup Loop
     Wire.begin();
     delay(500);
     
-    calibrate();
+    Panel1.keyval = Panel2.keyval = Panel3.keyval = {65,59,57,69,67,60,62,64,70,71,72,73};
+    Panel1.toggle = Panel2.toggle = Panel3.toggle = 1;
+    
+   // calibrate(Panel);
 }
 //---------------------------------------------
 void loop() //the main loop
 {
+    //Structs to hold all options for panel
+   
     
-    getPanelData(1,allPanelsData[0]);
-    generateMidi(1,allPanelsData[0]);
     
-    getPanelData(2,allPanelsData[1]);
-    generateMidi(2,allPanelsData[1]);
+  
+    getPanelData(Panel1);
+    generateMidi(Panel1);
     
-    getPanelData(3,allPanelsData[2]);
-    generateMidi(3,allPanelsData[2]);
+    getPanelData(Panel2);
+    generateMidi(Panel2);
+    
+    getPanelData(Panel3);
+    generateMidi(Panel3);
     
     delay(50);
     
@@ -168,7 +180,7 @@ void checkSerial() {
        
        digitalWrite(13, HIGH);
        
-       calibrate(); // Calibrate here!
+       //calibrate(); // Calibrate here!
        
        delay(4000);
        digitalWrite(13, LOW);
@@ -191,11 +203,14 @@ void calibrate(PANEL p) {
       p.data[i] = intCal[i];   
 }
 
-void getPanelData(PANEL p) {    //Gets sensor data for one grid
-    byte ICdataAsBytes[24];    //Byte Array to get raw bytes
+void getPanelData(PANEL singlePanel) {
+//Gets sensor data for one grid
+
+    //Byte Array to get raw bytes
+    byte ICdataAsBytes[24];
     int i = 0;
   
-    Wire.requestFrom(p.addr, 24);    // request 6 bytes from slave device #2
+    Wire.requestFrom(singlePanel.addr, 24);    // request 6 bytes from slave device #2
     
     while(Wire.available())    // slave may send less than requested
         ICdataAsBytes[i++] = Wire.read();
@@ -203,22 +218,22 @@ void getPanelData(PANEL p) {    //Gets sensor data for one grid
     int *tempData =(int*)&ICdataAsBytes;
     
     for( i = 0; i < 12; i++)
-        p.data[i] = tempData[i];
+        singlePanel.data[i] = tempData[i];
 }
 
-void generateMidi (PANEL p){
+void generateMidi (PANEL singlePanel){
 //Turns MIDI Notes on and off accordingly 
 
         int i;
         for(i=0; i<12; i++)
     {
         
-        if (singlePanelData[i]>850){
+        if (singlePanel.data[i]>850){
             //Serial.println(data_array[i]);
             //if(pintogB[i])
                 if(1)
             {
-                MIDI.sendNoteOn(keyval[i],map(singlePanelData[i],750, 1023, 65, 127),panel_index);
+                MIDI.sendNoteOn(singlePanel.keyval[i],map(singlePanel.data[i],750, 1023, 65, 127),singlePanel.channel);
                 
             }
         }
@@ -226,7 +241,7 @@ void generateMidi (PANEL p){
         {
            // if (pintogB[i]){
                 if(1){
-                MIDI.sendNoteOff(keyval[i],127,panel_index);
+                MIDI.sendNoteOff(singlePanel.keyval[i],127,singlePanel.channel);
              
                 
             }
