@@ -224,7 +224,7 @@ void calibrate() {
    
     int i=0;
     while(Wire.available())    // slave may send less than requested
-        dataSample[i++]=Wire.read();
+        dataSample[i++] = Wire.read();
     
     int *intCal =(int*)&dataSample;
     
