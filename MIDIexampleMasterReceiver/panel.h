@@ -10,7 +10,8 @@ struct PANEL {
     int ambient[12];
     int keyval[12];
     bool pintog[12];
-    bool lastval;
+    bool lastval[12];
+    bool toggle;
 };
 
 #endif
