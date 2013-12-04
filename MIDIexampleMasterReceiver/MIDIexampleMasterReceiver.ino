@@ -57,13 +57,11 @@ void loop() //the main loop
         icdata[i]=Wire.read();
         i++;
     }
-    //Serial.print(string(icdata));         // print the character
-    // delay(500);
+
     int *sensord =(int*)&icdata;
     for (i=0; i<8; i++)
     {
-        //Serial.print(icdata[2*i]);
-        //Serial.println(icdata[2*i+1]);
+        //LEAVING HERE DEBUG
         //Serial.print(i);
         //Serial.print(" ");
         //Serial.println(sensord[i]);
@@ -81,17 +79,13 @@ void loop() //the main loop
         icdataB[i]=Wire.read();
         i++;
     }
-    //Serial.print(string(icdata));         // print the character
-    // delay(500);
+ 
+
     int *sensordB =(int*)&icdataB;
     for (i=0; i<12; i++)
     {
         
-        // Serial.print("12guy ");
-        
-        // Serial.print(i);
-        //Serial.print(" ");
-        //Serial.println(sensordB[i]);
+
         
     }
     
@@ -105,22 +99,16 @@ void loop() //the main loop
         
         lastval=pinon[i];
         lastvalB=pinonB[i];
-        //Serial.print("pinoutlast:");
-        ///Serial.println(pinon[i]);
+
         pinon[i]=pinval[i]>800;
         pinonB[i]=pinvalB[i]>600;
-        //Serial.println("pinout now:");
-        //Serial.print(pinon[i]);
-        //Serial.print("Lastval:");
-        //Serial.println(lastval);
-        //Serial.print("On Now:");
-        //Serial.println(pinon[i]);
+
+
         pintog[i]= (lastval ^ pinon[i]);
         pintogB[i]=(lastvalB ^ pinonB[i]);
         
     }
-    //delay(2000);
-    //}
+  
     
     for(i=0; i<12; i++)
     {
@@ -131,9 +119,9 @@ void loop() //the main loop
                 //if(1)
             {
                 
-                // Serial.println(keyval[i]);
+              
                 MIDI.sendNoteOn(keyval[i],map(pinval[i],750, 1023, 65, 127),1);
-                //MIDI.sendNoteOn(i*2+60,map(pinval[i],0, 1023, 0, 127),i%2+1);
+                
             }
             
         }
@@ -142,10 +130,10 @@ void loop() //the main loop
             if(pintog[i]){
                 // if(1){
                 MIDI.sendNoteOff(keyval[i],127,1);
-                // MIDI.sendNoteOff(i*2+60,0,i%2+1);
-                //MIDI.sendNoteOff(i*2+60,0,i%2+1);
+            
                 
             }
+            //Leaving here for reference
             //MIDI.sendControlChange(7, map(pinval[i],600, 1023, 0, 127),i%2+1);
         }
     }
@@ -158,7 +146,7 @@ void loop() //the main loop
                 //if(1)
             {
                 MIDI.sendNoteOn(keyval[i],map(pinvalB[i],750, 1023, 65, 127),2);
-                //MIDI.sendNoteOn(i*2+60,map(pinval[i],0, 1023, 0, 127),i%2+1);
+                
             }
         }
         else
@@ -166,8 +154,7 @@ void loop() //the main loop
             if (pintogB[i]){
                 //if(1){
                 MIDI.sendNoteOff(keyval[i],127,2);
-                // MIDI.sendNoteOff(i*2+60,0,i%2+1);
-                //MIDI.sendNoteOff(i*2+60,0,i%2+1);
+             
                 
             }
             //MIDI.sendControlChange(7, map(pinval[i],600, 1023, 0, 127),i%2+1);
