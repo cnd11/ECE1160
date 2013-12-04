@@ -176,42 +176,37 @@ void checkSerial() {
      command = "";
 }
 
-void calibrate(int panel_index, int *data_array) {
+void calibrate(PANEL p) {
+    byte dataSample [24];
+    int i = 0;
   
-  byte dataSample [24];
-  
-  Wire.requestFrom(2, 24);    // request 6 bytes from slave device #2
-   
-    int i=0;
+    Wire.requestFrom(p.addr, 24);    // request 6 bytes from slave device #2
+    
     while(Wire.available())    // slave may send less than requested
         dataSample[i++] = Wire.read();
     
     int *intCal =(int*)&dataSample;
     
     for(i=0; i< 12; i++)
-      calibrateAr[i] = intCal[i];   
+      p.data[i] = intCal[i];   
 }
 
-void getPanelData(int panel_index, int *data_array) {
-//Gets sensor data for one grid
-
-    //Byte Array to get raw bytes
-    byte ICdataAsBytes[24];
-  
-    Wire.requestFrom(panel_index, 24);    // request 6 bytes from slave device #2
-    
+void getPanelData(PANEL p) {    //Gets sensor data for one grid
+    byte ICdataAsBytes[24];    //Byte Array to get raw bytes
     int i = 0;
+  
+    Wire.requestFrom(p.addr, 24);    // request 6 bytes from slave device #2
     
     while(Wire.available())    // slave may send less than requested
         ICdataAsBytes[i++] = Wire.read();
 
-
     int *tempData =(int*)&ICdataAsBytes;
     
     for( i = 0; i < 12; i++)
-        data_array[i] = tempData[i];
+        p.data[i] = tempData[i];
 }
-void generateMidi (PANEL pge){
+
+void generateMidi (PANEL p){
 //Turns MIDI Notes on and off accordingly 
 
         int i;
