@@ -48,7 +48,7 @@ void  setup() //The Setup Loop
     Panel3=(PANEL *)malloc(sizeof(PANEL));
     //Setting addresses
     Panel1->addr=1;
-    Panel2->addr-=2;
+    Panel2->addr=2;
     Panel3->addr=3;
     //Setting channels
     Panel1->channel=1;
@@ -100,103 +100,20 @@ void  setup() //The Setup Loop
 void loop() //the main loop
 {
     //Structs to hold all options for panel
-   
-    
-    
- 
+  
     getPanelData(Panel1);
-
     generateMidi(Panel1);
     
-   // getPanelData(Panel2);
-    //generateMidi(Panel2);
     
-  //  getPanelData(Panel3);
-    //generateMidi(Panel3);
+    getPanelData(Panel2);
+    generateMidi(Panel2);
+    
+    getPanelData(Panel3);
+    generateMidi(Panel3);
     
     delay(50);
     
-    /*
-    getPanelData(2,all_datat[1]);
-    
-    getPanelData(3,all_datat[2]);
-    /*
-    
-    
-   
-    delay(20);
-    for(i=0; i<12; i++)
-    {
-        pinval [i]=sensordB[i];
-        pinvalB[i]=sensord[i];
-        
-        
-        lastval=pinon[i];
-        lastvalB=pinonB[i];
 
-        pinon[i]=pinval[i]>800;
-        pinonB[i]=pinvalB[i]>600;
-
-
-        pintog[i]= (lastval ^ pinon[i]);
-        pintogB[i]=(lastvalB ^ pinonB[i]);
-        
-    }
-  
-    /*
-    for(i=0; i<12; i++)
-    {
-        
-        //if (pinon[i]){
-        if (pinval[i] > 1.1 * calibrateAr[i]){
-            if(pintog[i])
-                //if(1)
-            {
-                
-              
-                MIDI.sendNoteOn(keyval[i],map(pinval[i],750, 1023, 65, 127),1);
-                
-            }
-            
-        }
-        else
-        {
-            if(pintog[i]){
-                // if(1){
-                MIDI.sendNoteOff(keyval[i],127,1);
-            
-                
-            }
-            //Leaving here for reference
-            //MIDI.sendControlChange(7, map(pinval[i],600, 1023, 0, 127),i%2+1);
-        }
-    }
-    */
-    /*
-    for(i=0; i<8; i++)
-    {
-        
-        if (pinonB[i]){
-            if(pintogB[i])
-                //if(1)
-            {
-                MIDI.sendNoteOn(keyval[i],map(pinvalB[i],750, 1023, 65, 127),2);
-                
-            }
-        }
-        else
-        {
-            if (pintogB[i]){
-                //if(1){
-                MIDI.sendNoteOff(keyval[i],127,2);
-             
-                
-            }
-            //MIDI.sendControlChange(7, map(pinval[i],600, 1023, 0, 127),i%2+1);
-        }
-    }
-    Serial.flush();
-    */
 }
 
 void checkSerial() { 
@@ -296,7 +213,7 @@ void generateMidi (PANEL* singlePanel){
        }
         
        
-       if (singlePanel->data[i]>singlePanel->ambient[i]*1.10)
+       if (singlePanel->data[i]>singlePanel->ambient[i]*1.15)
        {
             singlePanel->lastval[i]=1;
             if(singlePanel->pintog[i])
