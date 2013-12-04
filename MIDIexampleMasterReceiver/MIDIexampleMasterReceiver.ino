@@ -7,6 +7,7 @@
 #include <Serial.h>
 #include <Wire.h>
 
+
 short pinval[12];
 short pinvalB[8];
 boolean pinon[12];
@@ -18,7 +19,7 @@ boolean lastvalB;
 int keyval[12]={65,59,57,69,67,60,62,64,70,71,72,73};
 byte icdata [16];
 byte icdataB [24];
-int all_data[3][12];
+int allPanelsData[3][12];
 
  int *calibrateAr;
  
@@ -41,10 +42,16 @@ void  setup() //The Setup Loop
 void loop() //the main loop
 {
     
-    getPanelData(1,all_data[0]);
-    Serial.println(all_data[0][3]);
-    generateMidi(1,all_data[0]);
-    delay(200);
+    getPanelData(1,allPanelsData[0]);
+    generateMidi(1,allPanelsData[0]);
+    
+    getPanelData(2,allPanelsData[1]);
+    generateMidi(2,allPanelsData[1]);
+    
+    getPanelData(3,allPanelsData[2]);
+    generateMidi(3,allPanelsData[2]);
+    
+    delay(50);
     
     /*
     getPanelData(2,all_datat[1]);
@@ -204,18 +211,19 @@ void getPanelData(int panel_index, int *data_array) {
     for( i = 0; i < 12; i++)
         data_array[i] = tempData[i];
 }
-void generateMidi (int panel_index, int *data_array){
+void generateMidi (int panel_index, int *singlePanelData){
 //Turns MIDI Notes on and off accordingly 
 
         int i;
         for(i=0; i<12; i++)
     {
         
-        if (data_array[i]>500){
+        if (singlePanelData[i]>850){
+            //Serial.println(data_array[i]);
             //if(pintogB[i])
                 if(1)
             {
-                MIDI.sendNoteOn(keyval[i],map(data_array[i],750, 1023, 65, 127),2);
+                MIDI.sendNoteOn(keyval[i],map(singlePanelData[i],750, 1023, 65, 127),panel_index);
                 
             }
         }
@@ -223,7 +231,7 @@ void generateMidi (int panel_index, int *data_array){
         {
            // if (pintogB[i]){
                 if(1){
-                //MIDI.sendNoteOff(keyval[i],127,2);
+                MIDI.sendNoteOff(keyval[i],127,panel_index);
              
                 
             }
