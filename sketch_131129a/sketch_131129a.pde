@@ -125,7 +125,6 @@ public void controlEvent(ControlEvent event) {
         selectInput("Select a file to process:", "loadNotesFile" );
         
     } else if( label != null && label.startsWith("Send Config") ) {
-        
         println("SEND");
        master.sendConfig(listOfPanels, noteToMidi);
         
@@ -176,7 +175,7 @@ void loadMidiConversion(File selection) {
             String line = reader.readLine();
             String [] noteMidi = line.split(" +");
             
-            noteToMidi.put(noteMidi[0], noteMidi[1]);
+            noteToMidi.put(noteMidi[0].trim(), noteMidi[1]);
         }
         reader.close();
         

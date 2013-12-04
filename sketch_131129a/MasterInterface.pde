@@ -168,21 +168,23 @@ class MasterInterface {
     
 void sendConfig(ArrayList<MInterface> panels, Hashtable<String, String> noteToMidi) {
   String configString = "";
+    
   for(MInterface p : panels) {
-    for (Textfield tf : inputs) {
-       if(noteToMidi.contains(tf.trim())
+    for (Textfield tf : p.inputs) {
+       if(noteToMidi.containsKey(tf.getText().trim().toUpperCase()))
        {
-          configString += " " + noteToMidi.get(tf.trim())
+          configString += " " + noteToMidi.get(tf.getText().trim().toUpperCase());
        } else {
-          println("Invalid note " +  tf.trim() + "!");
+          println("Invalid note " +  tf.getText().trim() + "!");
           return;
        }
     }
     configString += "\n";
   }
-  
+    println(configString);
     port.write("\t");
     port.write("start cmd+data"); 
     port.write(configString);
   }
 }
+
