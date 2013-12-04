@@ -165,4 +165,24 @@ class MasterInterface {
             println("Error saving master config: " + e);
         }
     }
+    
+void sendConfig(ArrayList<MInterface> panels, Hashtable<String, String> noteToMidi) {
+  String configString = "";
+  for(MInterface p : panels) {
+    for (Textfield tf : inputs) {
+       if(noteToMidi.contains(tf.trim())
+       {
+          configString += " " + noteToMidi.get(tf.trim())
+       } else {
+          println("Invalid note " +  tf.trim() + "!");
+          return;
+       }
+    }
+    configString += "\n";
+  }
+  
+    port.write("\t");
+    port.write("start cmd+data"); 
+    port.write(configString);
+  }
 }

@@ -127,15 +127,13 @@ public void controlEvent(ControlEvent event) {
     } else if( label != null && label.startsWith("Send Config") ) {
         
         println("SEND");
-        port.write("\t");
-        port.write("start cmd+data");
+       master.sendConfig(listOfPanels, noteToMidi);
         
     } else if( label != null && label.startsWith("Calibrate") ) {
         
         println("calibrate");
         port.write("\t");
         port.write("CALIBRATE");
-        
     }
 }
 

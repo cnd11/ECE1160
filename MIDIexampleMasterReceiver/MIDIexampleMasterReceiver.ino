@@ -22,9 +22,10 @@ byte icdata [16];
 byte icdataB [24];
 int allPanelsData[3][12];
 
- int *calibrateAr;
+int *calibrateAr;
  
- String command = "";
+String command = "";
+String configMSG = "";
  
 PANEL Panel1;
 PANEL Panel2;
@@ -43,6 +44,8 @@ void  setup() //The Setup Loop
     
     Panel1.keyval = Panel2.keyval = Panel3.keyval = {65,59,57,69,67,60,62,64,70,71,72,73};
     Panel1.toggle = Panel2.toggle = Panel3.toggle = 1;
+    
+    while( !parseConfig() ) delay(100);
     
    // calibrate(Panel);
 }
@@ -171,7 +174,7 @@ void checkSerial() {
    if(command == "start cmd+data") {
       digitalWrite(11, HIGH);
        
-       // Parse config data!
+       parseConfig();
        
        delay(4000);
        digitalWrite(11, LOW);
@@ -180,7 +183,9 @@ void checkSerial() {
        
        digitalWrite(13, HIGH);
        
-       //calibrate(); // Calibrate here!
+       calibrate(Panel1); // Calibrate here!
+       calibrate(Panel2); 
+       calibrate(Panel3); 
        
        delay(4000);
        digitalWrite(13, LOW);
@@ -249,6 +254,24 @@ void generateMidi (PANEL singlePanel){
         }
     }
     Serial.flush();
+}
+
+boolean parseConfig() {
+    
+    while(Serial.available() > 0)
+    {
+        char inChar = Serial.read();
+  
+        if(inChar == '\n') break;
+        if(inChar != '\r') configMSG += inChar;
+  
+        delay(1);
+    }
+    
+    Serial.print(configMSG);
+    
+    return true;
+    
 }
 
 
