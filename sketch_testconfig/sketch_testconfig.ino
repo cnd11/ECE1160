@@ -30,6 +30,11 @@ void loop() {
             }
             // Return data back through serial to confirm data transmission.
             printReceived(buff, nBytes);
+        } else {
+            // Not config start character... throw away this data.
+            for (int i=0; i < nBytes; i++) {
+                Serial.read();
+            }
         }
     }
     
