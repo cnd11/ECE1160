@@ -38,7 +38,7 @@ void setup() {
     master = new MasterInterface(400, 0, controlP5);
     
     //print(Serial.list());                                  // Use this to find the index of your Arduino's serial port
-    //port = new Serial(this, Serial.list()[5], 115200);     // Comment this out to support serial read/write ops
+    port = new Serial(this, Serial.list()[8], 115200);     // Comment this out to support serial read/write ops
     
     noteToMidi = new Hashtable<String, String>();
     listOfPanels =  new ArrayList<MInterface>();

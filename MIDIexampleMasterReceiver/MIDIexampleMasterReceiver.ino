@@ -18,7 +18,7 @@ boolean pintog[12]={1,1,1,1,1,1,1,1,1,1,1,1};
 boolean pintogB[12]={1,1,1,1,1,1,1,1,1,1,1,1};
 boolean lastval[12]={1,1,1,1,1,1,1,1,1,1,1,1};
 boolean lastvalB;
-int keyval[12]={65,59,57,69,67,60,62,64,70,71,72,73};
+int keyval[12]={65,59,57,69,67,60,62,64,71,72,74,76};
 byte icdata [16];
 byte icdataB [24];
 int allPanelsData[3][12];
@@ -26,7 +26,7 @@ int allPanelsData[3][12];
 int *calibrateAr;
  
 String command = "";
-String configMSG = "";
+char* configMSG = "";
  
 PANEL* Panel1;
 PANEL* Panel2;
@@ -75,6 +75,9 @@ void  setup() //The Setup Loop
     calibrate(Panel2);
     calibrate(Panel3);
     
+   // Serial.println(Panel1->ambient[0]);
+    
+    //while(1){};
    
     //Setting tog on values
     
@@ -92,7 +95,8 @@ void  setup() //The Setup Loop
     bool toggle;*/
     
     
-    while( !parseConfig() ) delay(100);
+   // while( !checkSerial() ) delay(100);
+
     
    // calibrate(Panel);
 }
@@ -116,8 +120,9 @@ void loop() //the main loop
 
 }
 
-void checkSerial() { 
-  if(Serial.peek() != '\t' ) return;
+boolean checkSerial() { 
+  if(Serial.peek() != '\t' ) return 0;
+  
   
   Serial.read();  // consume '\t'
 
@@ -137,12 +142,13 @@ void checkSerial() {
   Serial.flush();
  
    if(command == "start cmd+data") {
-      digitalWrite(11, HIGH);
-       
+     // Serial.println("we made it!");
+      digitalWrite(13, HIGH);
+       delay(100);
        parseConfig();
        
        delay(4000);
-       digitalWrite(11, LOW);
+       digitalWrite(13, LOW);
        
      } else if(command == "CALIBRATE") {
        
@@ -156,6 +162,7 @@ void checkSerial() {
        digitalWrite(13, LOW);
      }
      command = "";
+     return true;
 }
 
 void calibrate(PANEL* p) {
@@ -204,7 +211,7 @@ void generateMidi (PANEL* singlePanel){
       if(singlePanel->toggle)
       {
         //only actively set pintog if toggle option is false
-        singlePanel->pintog[i]= (singlePanel->lastval[i] ^ (singlePanel->data[i]>850));
+        singlePanel->pintog[i]= (singlePanel->lastval[i] ^ (singlePanel->data[i]>singlePanel->ambient[i]+75));
       }
       else
       {
@@ -213,7 +220,7 @@ void generateMidi (PANEL* singlePanel){
        }
         
        
-       if (singlePanel->data[i]>singlePanel->ambient[i]*1.15)
+       if (singlePanel->data[i]>singlePanel->ambient[i]+75)
        {
             singlePanel->lastval[i]=1;
             if(singlePanel->pintog[i])
@@ -235,18 +242,31 @@ void generateMidi (PANEL* singlePanel){
 }
 
 boolean parseConfig() {
-    
+    delay(100);
     while(Serial.available() > 0)
     {
         char inChar = Serial.read();
+        
+        if(inChar == '\n')
+        {
+          int i=0;
+          char * test;
+          test = strtok (configMSG," ");
+          while (test != NULL)
+           {
+            Panel1->keyval[i++]=atoi(test);
+            test= strtok (NULL, " ");
+            Serial.println(test);
+           }
+           configMSG="";
+        }
+            if(inChar != '\r') configMSG += inChar;
   
-        if(inChar == '\n') break;
-        if(inChar != '\r') configMSG += inChar;
-  
-        delay(1);
+        delay(50);
     }
-    
-    Serial.print(configMSG);
+    //Serial.print("*");
+    //Serial.print(configMSG);
+    //Serial.println("*");
     
     return true;
     

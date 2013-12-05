@@ -183,7 +183,7 @@ void sendConfig(ArrayList<MInterface> panels, Hashtable<String, String> noteToMi
   }
     println(configString);
     port.write("\t");
-    port.write("start cmd+data"); 
+    port.write("start cmd+data\n"); 
     port.write(configString);
   }
 }
