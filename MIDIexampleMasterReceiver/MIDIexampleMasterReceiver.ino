@@ -19,6 +19,8 @@ boolean pintogB[12]={1,1,1,1,1,1,1,1,1,1,1,1};
 boolean lastval[12]={1,1,1,1,1,1,1,1,1,1,1,1};
 boolean lastvalB;
 int keyval[12]={65,59,57,69,67,60,62,64,71,72,74,76};
+int keyval1[12]={24,26,28,29,31,33,35,36,38,40,41,43};
+int keyval2[12]={45,47,48,50,52,53,55,57,59,60,62,64};
 byte icdata [16];
 byte icdataB [24];
 int allPanelsData[3][12];
@@ -60,8 +62,8 @@ void  setup() //The Setup Loop
     Panel3->toggle = 1;
     //Setting Keyvalues
     memcpy(Panel1->keyval,keyval,12*sizeof(int));
-    memcpy(Panel2->keyval,keyval,12*sizeof(int));
-    memcpy(Panel3->keyval,keyval,12*sizeof(int));
+    memcpy(Panel2->keyval,keyval1,12*sizeof(int));
+    memcpy(Panel3->keyval,keyval2,12*sizeof(int));
     
     memcpy(Panel1->pintog,pintog,12*sizeof(boolean));
     memcpy(Panel2->pintog,pintog,12*sizeof(boolean));
@@ -211,8 +213,8 @@ void generateMidi (PANEL* singlePanel){
       if(singlePanel->toggle)
       {
         //only actively set pintog if toggle option is false
-        singlePanel->pintog[i]= (singlePanel->lastval[i] ^ (singlePanel->data[i]>singlePanel->ambient[i]+75));
-      }
+        singlePanel->pintog[i]= (singlePanel->lastval[i] ^ (singlePanel->data[i]>singlePanel->ambient[i]+55));
+      }//75 was good
       else
       {
         //set pintog to true, so it will be continually sending data
@@ -220,7 +222,7 @@ void generateMidi (PANEL* singlePanel){
        }
         
        
-       if (singlePanel->data[i]>singlePanel->ambient[i]+75)
+       if (singlePanel->data[i]>singlePanel->ambient[i]+55)
        {
             singlePanel->lastval[i]=1;
             if(singlePanel->pintog[i])
