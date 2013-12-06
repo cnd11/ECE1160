@@ -168,6 +168,9 @@ class MasterInterface {
     
 void sendConfig(ArrayList<MInterface> panels, Hashtable<String, String> noteToMidi) {
   String configString = "";
+  
+   port.write("\t");
+   port.write("start cmd+data\n");   
     
   for(MInterface p : panels) {
     for (Textfield tf : p.inputs) {
@@ -181,10 +184,12 @@ void sendConfig(ArrayList<MInterface> panels, Hashtable<String, String> noteToMi
     }
     configString += "\n";
   }
+  /*
     println(configString);
     port.write("\t");
     port.write("start cmd+data\n"); 
     port.write(configString);
+    */
   }
 }
 

@@ -245,6 +245,7 @@ boolean parseConfig() {
     delay(100);
     while(Serial.available() > 0)
     {
+        /*
         char inChar = Serial.read();
         
         if(inChar == '\n')
@@ -262,8 +263,13 @@ boolean parseConfig() {
         }
             if(inChar != '\r') configMSG += inChar;
   
-        delay(50);
+        
+        */
+       Serial.println(Serial.parseInt()); 
+       delay(50);
     }
+    
+    delay(10000);
     //Serial.print("*");
     //Serial.print(configMSG);
     //Serial.println("*");
