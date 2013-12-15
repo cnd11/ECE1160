@@ -117,7 +117,7 @@ void loop() //the main loop
     getPanelData(Panel2);
     generateMidi(Panel2);
     
-    getPanelData(Panel3);
+  getPanelData(Panel3);
     generateMidi(Panel3);
     
     delay(50);
