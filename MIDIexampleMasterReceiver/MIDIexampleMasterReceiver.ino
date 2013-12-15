@@ -73,9 +73,11 @@ void  setup() //The Setup Loop
     memcpy(Panel2->lastval,lastval,12*sizeof(boolean));
     memcpy(Panel3->lastval,lastval,12*sizeof(boolean));
     
-    calibrate(Panel1);
+    //calibrate(Panel1);
+    calibrateSelf(Panel1);
     calibrate(Panel2);
     calibrate(Panel3);
+   // calibrateSelf(Panel1);
     
    // Serial.println(Panel1->ambient[0]);
     
@@ -107,7 +109,8 @@ void loop() //the main loop
 {
     //Structs to hold all options for panel
   
-    getPanelData(Panel1);
+    //getPanelData(Panel1);
+    getSelfData(Panel1);
     generateMidi(Panel1);
     
     
@@ -280,4 +283,20 @@ boolean parseConfig() {
     
 }
 
+void getSelfData(PANEL* singlePanel)
+{
+  int i;
+  for( i = 0; i < 12; i++)
+  {
+        singlePanel->data[i] = analogRead(i);
+  }
+}
+void calibrateSelf(PANEL* p) {
+   
+    int i = 0;
+  
 
+    
+    for(i=0; i< 12; i++)
+      p->ambient[i] = analogRead(i);   
+}
